@@ -1,64 +1,7 @@
 'use strict'
 
-// const User = use("App/Models/User");
-// const Enterprise = use("App/Models/Enterprise");
 const { users, enterprises } = require('../models');
 const connection = require('../connection');
-
-// const Database = use('Database')
-
-// const HashHelper = use('App/Support/HashHelper');
-// const FileHelper = use('App/Support/FileHelper');
-// const Helpers = use('Helpers');
-
-class UserController {
-
-  // async delete({ params }) {
-  //   const user = await User.findBy(
-  //     "id", params.id
-  //   );
-  //   if (!user) return {};
-  //   await Database.table('tokens').select('*').where('user_id', user.id).delete();
-
-  //   return user.delete();
-  // }
-
-  // async hashFile({ request, response }) {
-
-  //   try {
-  //     const file = request.file('File', {});
-
-  //     const res = await FileHelper.moveToTemp(file);
-
-  //     if (!res) {
-  //       throw 'Couldn\' move the file to a temp location';
-  //     }
-
-  //     const filePath = `${Helpers.tmpPath('uploads')}/deu-certo.${file.extname}`;
-  //     return await HashHelper.hash(filePath, 'sha256');
-
-  //   } catch (error) {
-  //     return response.send({ 'error': error });
-  //   }
-  // }
-
-  // async generateKeys({ request, response }) {
-
-  //   try {
-  //     return HashHelper.generateKeyPairs();
-  //   } catch (error) {
-  //     return response.send({ 'error': error });
-  //   }
-  // }
-
-  // async createSignedJWT({ request, response }) {
-  //   return HashHelper.hteste(
-  //     '173013304aeec4e49cc6718cb4caeccb',
-  //     'my.vuw.ac.nz/sda-file-association',
-  //     '2016-01'
-  //   );
-  // }
-}
 
 const create = async (userData) => {
   try {

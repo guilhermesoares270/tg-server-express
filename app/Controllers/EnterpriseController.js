@@ -1,22 +1,18 @@
 'use strict'
 
-// const Enterprise = use("App/Models/Enterprise");
-// const BlockchainController = use("App/Controllers/Http/BlockchainController");
-
 const { enterprises } = require('../models');
+const { deploy } = require('../Controllers/BlockchainController');
 
 const create = async (enterpriseData) => {
   try {
     const enterprise = await enterprises.create(enterpriseData);
-    // const blockchainController = new BlockchainController();
-    // await blockchainController.deploy(data.razao_social, data.cnpj);
-
-    console.log(`afterCreate`);
+    await deploy(enterpriseData.razao_social, enterpriseData.cnpj);
 
     return enterprise;
   } catch (error) {
-    console.log(`enterprise create: ${error}`);
-    return null;
+    // console.log(`enterprise create: ${error}`);
+    // return null;
+    throw error;
   }
 }
 

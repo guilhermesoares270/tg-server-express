@@ -1,18 +1,15 @@
 const Yup = require('yup');
-const { create } = require('../app/Controllers/EnterpriseController');
+const { create } = require('../app/Controllers/SessionController');
 
 const createSchema = Yup.object().shape({
-    razao_social: Yup.string().required(),
-    cnpj: Yup.string().required(),
     email: Yup.string().required().email(),
     password: Yup.string().required().min(8),
-    cep: Yup.string().required(),
 });
 
 const prefix = '/api/v1';
 
 const register = (app) => {
-    app.post(`${prefix}/enterprises`, async (req, res, next) => {
+    app.post(`${prefix}/sessions`, async (req, res, next) => {
         const valid = await createSchema.isValid(req.body);
         console.log(`valid: ${valid}`);
         if (valid) next();
@@ -22,10 +19,9 @@ const register = (app) => {
         });
     }, async (req, res) => {
         try {
-            const enterprise = await create(req.body);
-            if (!enterprise) throw Error('Erro ao criar empresa');
+            const response = await create(req);
             res.json({
-                data: [enterprise],
+                data: [response],
                 errors: [],
             });
         } catch (error) {

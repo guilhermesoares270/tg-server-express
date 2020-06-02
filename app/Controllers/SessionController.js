@@ -1,40 +1,30 @@
 'use strict'
 
-const User = use("App/Models/User");
-const Enterprise = use("App/Models/Enterprise");
-/**
- * Manages sessions in the app
- */
-class SessionController {
-  async create({ request, auth }) {
-    const { email, password } = request.all();
+const { users, enterprises } = require('../models');
+const jsonwebtoken = require('jsonwebtoken');
 
-    const user = await User.findBy('email', email);
-    if (!user) return {};
-    const enterprise = await Enterprise.findBy('id', user.enterprise_id);
+const create = async (request) => {
+  const { email, password } = request.body;
 
-    const token = await auth
-      .withRefreshToken()
-      .attempt(email, password, { email, password, enterprise });
+  const user = await users.findOne({
+    where: {
+      email: email,
+    },
+  });
+  if (!user) return {};
+  const enterprise = await enterprises.findOne({
+    where: {
+      id: user.enterprise_id,
+    },
+  });
+  const token = await jsonwebtoken.sign({ email, password, enterprise }, password);
 
-    console.log(`${enterprise.cnpj} SessionController: ${JSON.stringify(token)}`);
+  return {
+    token,
+    enterprise_cnpj: enterprise.cnpj,
+  };
+};
 
-    // return token;
-    return {
-      ...token,
-      enterprise_cnpj: enterprise.cnpj,
-    };
-  }
-
-  async refresh({ request, auth }) {
-    const { refresh_token } = request.all();
-
-    const newToken = await auth
-      .newRefreshToken()
-      .generateForRefreshToken(refresh_token);
-
-    return newToken;
-  }
-}
-
-module.exports = SessionController
+module.exports = {
+  create,
+};
