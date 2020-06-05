@@ -2,7 +2,8 @@ const {
     getDocument,
     docsCount,
     index,
-    getEnterprise
+    getEnterprise,
+    create,
 } = require('../app/Controllers/BlockchainController');
 
 const prefix = '/api/v1';
@@ -11,7 +12,7 @@ const register = (app) => {
     app.get(`${prefix}/ganache/getDoc`, getDocument);
     app.get(`${prefix}/ganache/count`, docsCount);
     app.get(`${prefix}/ganache/index`, index);
-    // app.post(`${prefix}/ganache/index`);
+    app.post(`${prefix}/ganache`, create);
     app.get(`${prefix}/ganache/enterprise`, getEnterprise);
 };
 

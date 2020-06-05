@@ -15,6 +15,7 @@ const create = async (userData) => {
     const newData = {
       username: userData.username,
       email: userData.email,
+      cpf: userData.cpf,
       password: userData.password,
       enterprise_id: enterprise ? enterprise.id : null,
       enterprise_cnpj: enterprise ? enterprise.cnpj : null,
@@ -68,15 +69,24 @@ const get = async ({ id }) => {
   }
 }
 
+const getByCpf = async ({ cpf }) => {
+  try {
+    return users.findOne({
+      where: {
+        cpf: cpf,
+      }
+    });
+  } catch (err) {
+    return {};
+  }
+}
+
 const index = async () => await users.findAll();
-
-const del = async ({ id }) => {
-
-};
 
 module.exports = {
   create,
   alter,
   get,
+  getByCpf,
   index,
 };

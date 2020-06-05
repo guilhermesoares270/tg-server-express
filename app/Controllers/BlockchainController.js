@@ -4,9 +4,10 @@ const ContractHelper = require('../Support/ContractHelper');
 const Wallet = require('../Services/EnterpriseWallet');
 const ContractInstance = require('../Support/ContractInstance');
 
-const jwt = require('jsonwebtoken');
 const jwtDecode = require('jwt-decode');
 const { enterprises } = require('../models');
+
+const { getByCpf } = require('./UserController');
 
 const validateToken = (req) => {
   if (!req.headers.authorization) return false;
@@ -87,25 +88,18 @@ const deployContract = async ({ contract, abi, evm, razao_social, cnpj }) => {
 
 const docsCount = async (request, response) => {
   const token = await getToken(request);
-  // const { data: { enterprise } } = token;
   const { enterprise } = token;
   if (Object.keys(token).length === 0) return { size: 0 };
 
   try {
     const contractInfo = ContractInstance.contract(enterprise.razao_social);
 
-    // response.send({
-    //   size: parseInt(await contractInfo.contract.methods.getDocsCount().call())
-    // });
     response.json({
       size: parseInt(await contractInfo.contract.methods.getDocsCount().call())
     });
 
   } catch (error) {
     console.log(`error: ${error.message}`);
-    // response.send({
-    //   size: 0,
-    // });
     response.json({
       size: 0,
     });
@@ -127,7 +121,6 @@ const getEnterprise = async (request, response) => {
       errors: [],
     });
   } catch (error) {
-    console.log(`Enterprise Error: ${error}`);
     response.json({
       razao_social: null,
       cnpj: null,
@@ -138,7 +131,6 @@ const getEnterprise = async (request, response) => {
 
 const index = async (request, response) => {
   const token = await getToken(request);
-  // const { data: { enterprise } } = token;
   const { enterprise } = token;
 
   try {
@@ -152,11 +144,15 @@ const index = async (request, response) => {
 
     let merge = [];
     for (let i = 0; i < res[0].length; i++) {
+      const cpf = Wallet.utils.hexToUtf8(cpfs[i]);
+      const userData = await getByCpf({ cpf });
       merge.push({
+        email: userData?.email || '',
         signature: signatures[i],
-        cpf: cpfs[i]
+        cpf: userData?.cpf || '',
       });
     }
+
     return response.json({ data: [...merge], errors: [] });
   } catch (error) {
     return response.json({ data: [], errors: error.message });
@@ -165,7 +161,7 @@ const index = async (request, response) => {
 
 const create = async (request, response) => {
   const token = await getToken(request);
-  const { data: { enterprise } } = token;
+  const { enterprise } = token;
 
   try {
     const { signature, cpf } = request.body;
@@ -193,7 +189,6 @@ const create = async (request, response) => {
 
 const getDocument = async (request, response) => {
   const token = await getToken(request);
-  // const { data: { enterprise } } = token;
   const { enterprise } = token;
 
   try {
@@ -207,7 +202,9 @@ const getDocument = async (request, response) => {
     if (!cpfBytes || Wallet.utils.hexToUtf8(cpfBytes) == '')
       throw Error('Documento não encontrado');
 
-    response.json({ data: [{ cpf: cpf }], errors: [] });
+    console.log(`cpfBytes: ${cpfBytes}`);
+
+    response.json({ data: [{ cpf: Wallet.utils.hexToUtf8(cpfBytes) }], errors: [] });
   } catch (error) {
     response.json({ data: [], errors: [error.message] });
   }
