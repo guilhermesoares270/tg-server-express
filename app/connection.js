@@ -2,7 +2,7 @@
 const Sequelize = require('sequelize');
 require('dotenv').config();
 
-const uri = process.env.DEV_DATABASE_URL ?? '';
+const uri = process.env.DATABASE_URL ?? '';
 
 // create sequelize instance
 const sequelize = new Sequelize(

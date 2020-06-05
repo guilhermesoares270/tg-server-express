@@ -14,7 +14,7 @@ let sequelize;
 // } else {
 //   sequelize = new Sequelize(config.database, config.username, config.password, config);
 // }
-sequelize = new Sequelize(process.env.DEV_DATABASE_URL);
+sequelize = new Sequelize(process.env.DATABASE_URL);
 
 fs
   .readdirSync(__dirname)
