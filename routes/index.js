@@ -8,4 +8,5 @@ module.exports = (app) => {
     enterprises(app);
     sessions(app);
     contracts(app);
-};
+    app.get('*', (req, res) => res.json({ data: [], errors: ['404'] }))
+};  
