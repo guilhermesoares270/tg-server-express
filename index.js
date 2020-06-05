@@ -2,7 +2,7 @@ const express = require('express');
 const initContracts = require('./app/Services/InitContracts');
 // const userRoutes = require('./routes/users');
 const routes = require('./routes');
-
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json());
@@ -17,4 +17,4 @@ app.get('/', async (req, res) => {
     res.send(`Hello:`);
 });
 
-app.listen(3333);
+app.listen(PORT);
